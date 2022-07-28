@@ -1,0 +1,41 @@
+﻿@page
+@model TDPModel
+@using System.Data;
+@{   
+    ViewData["Title"] = "TDP Switching Test";
+    DataTable dt = ((DataTable)ViewData["TableData"]);
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+
+    <h2>connecting ---> @ViewData["dbname"]</h2>
+
+    <p>=====================================</p>
+
+    <h2>@ViewData["TableData"]</h2>
+    <table align="center">
+            <tr>
+            @{
+                foreach (DataColumn dc in dt.Columns)
+                {
+                                <th>@dc.Caption</th>
+                }
+            }
+            </tr>
+
+            @{
+                foreach (DataRow dr in dt.Rows)
+                {
+                    <tr>
+                    @{
+                    foreach (DataColumn dc in dt.Columns)
+                    {
+                                <td>@dr[dc.Caption]</td>
+                    }
+                    }
+                    </tr>
+                }
+            }
+    </table>
+</div>

@@ -1,0 +1,33 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+table {
+    table-layout: fixed;
+    width: 300px;
+    word-wrap: break-word;
+}
+th, td {
+    border: solid 1px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #dcdcdc;
+}
