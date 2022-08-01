@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Oracle.ManagedDataAccess.Client;
-//using Tibero.DataAccess.Client;
+//using Oracle.ManagedDataAccess.Client;
+using Tibero.DataAccess.Client;
 using System.Data;
 using System.Diagnostics;
 
@@ -29,27 +29,27 @@ namespace TmaxWebApplication1.Pages
 
             try
             {
-                using (OracleConnection conn = new OracleConnection())
+                using (TiberoConnection conn = new TiberoConnection())
                 {
                     // Oracle connection information
-                    conn.ConnectionString =
-                     "User ID=TEST; Password=TEST; Data Source=192.168.56.108/ora12c";
-                    conn.Open();
-
-                    // Tibero connection information
                     //conn.ConnectionString =
-                    //    "User Id=tibero;" +
-                    //            "Password=tmax; " +
-                    //            @"Data Source=(DESCRIPTION=((INSTANCE=(HOST=18.176.54.215)(PORT=8629)(DB_NAME=tibero))))";
+                    //"User ID=TEST; Password=TEST; Data Source=192.168.56.108/ora12c";
                     //conn.Open();
 
+                    // Tibero connection information
+                    conn.ConnectionString =
+                        "User Id=tibero;" +
+                                "Password=tmax; " +
+                                @"Data Source=(DESCRIPTION=((INSTANCE=(HOST=tbredmine)(PORT=8629)(DB_NAME=tibero))))";
+                    conn.Open();
+
                     // get DB name
-                    using (OracleCommand cmdDbname = new OracleCommand(selectDbname))
+                    using (TiberoCommand cmdDbname = new TiberoCommand(selectDbname))
                     {
                         cmdDbname.Connection = conn;
                         cmdDbname.CommandType = CommandType.Text;
 
-                        using (OracleDataReader readerDbname = cmdDbname.ExecuteReader())
+                        using (TiberoDataReader readerDbname = cmdDbname.ExecuteReader())
                         {
                             while (readerDbname.Read())
                             {
@@ -59,12 +59,12 @@ namespace TmaxWebApplication1.Pages
                     }
 
                     // get column names of EMP
-                    using (OracleCommand cmdColumnName = new OracleCommand(selectColumnName))
+                    using (TiberoCommand cmdColumnName = new TiberoCommand(selectColumnName))
                     {
                         cmdColumnName.Connection = conn;
                         cmdColumnName.CommandType = CommandType.Text;
 
-                        using (OracleDataReader readerColumnName = cmdColumnName.ExecuteReader())
+                        using (TiberoDataReader readerColumnName = cmdColumnName.ExecuteReader())
                         {
                             while (readerColumnName.Read())
                             {
@@ -77,12 +77,12 @@ namespace TmaxWebApplication1.Pages
                     }
 
                     // get rows of EMP
-                    using (OracleCommand cmdEmp = new OracleCommand(selectTable))
+                    using (TiberoCommand cmdEmp = new TiberoCommand(selectTable))
                     {
                         cmdEmp.Connection = conn;
                         cmdEmp.CommandType = CommandType.Text;
 
-                        using (OracleDataReader readerEmp = cmdEmp.ExecuteReader())
+                        using (TiberoDataReader readerEmp = cmdEmp.ExecuteReader())
                         {
                             while (readerEmp.Read())
                             {
