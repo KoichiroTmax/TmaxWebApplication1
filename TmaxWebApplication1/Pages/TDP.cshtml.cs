@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-//using Oracle.ManagedDataAccess.Client;
-using Tibero.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
+//using Tibero.DataAccess.Client;
 using System.Data;
 using System.Diagnostics;
 
@@ -15,33 +15,41 @@ namespace TmaxWebApplication1.Pages
             _logger = logger;
         }
 
-        public object ViewBag { get; private set; }
-
         public void OnGet()
         {
+            // get DB name
             string selectDbname = "SELECT NAME FROM V$DATABASE";
-            string selectEmp = "SELECT * FROM EMP";
-            string selectColumnName = "SELECT column_name FROM USER_TAB_COLUMNS WHERE table_name = 'EMP'";
 
-            DataTable dt = new DataTable("EMP");
+            // set a table name you want to use on "useTable"
+            string useTable = "EMP";
+            string selectTable = "SELECT * FROM " + useTable;
+            string selectColumnName = "SELECT column_name FROM USER_TAB_COLUMNS WHERE table_name = '" + useTable + "'";
+
+            DataTable dt = new DataTable(useTable);
 
             try
             {
-                using (TiberoConnection conn = new TiberoConnection())
+                using (OracleConnection conn = new OracleConnection())
                 {
+                    // Oracle connection information
                     conn.ConnectionString =
-                        "User Id=tibero;" +
-                               "Password=tmax; " +
-                              @"Data Source=(DESCRIPTION=((INSTANCE=(HOST=18.176.54.215)(PORT=8629)(DB_NAME=tibero))))";
+                     "User ID=TEST; Password=TEST; Data Source=192.168.56.108/ora12c";
                     conn.Open();
 
+                    // Tibero connection information
+                    //conn.ConnectionString =
+                    //    "User Id=tibero;" +
+                    //            "Password=tmax; " +
+                    //            @"Data Source=(DESCRIPTION=((INSTANCE=(HOST=18.176.54.215)(PORT=8629)(DB_NAME=tibero))))";
+                    //conn.Open();
+
                     // get DB name
-                    using (TiberoCommand cmdDbname = new TiberoCommand(selectDbname))
+                    using (OracleCommand cmdDbname = new OracleCommand(selectDbname))
                     {
                         cmdDbname.Connection = conn;
                         cmdDbname.CommandType = CommandType.Text;
 
-                        using (TiberoDataReader readerDbname = cmdDbname.ExecuteReader())
+                        using (OracleDataReader readerDbname = cmdDbname.ExecuteReader())
                         {
                             while (readerDbname.Read())
                             {
@@ -51,12 +59,12 @@ namespace TmaxWebApplication1.Pages
                     }
 
                     // get column names of EMP
-                    using (TiberoCommand cmdColumnName = new TiberoCommand(selectColumnName))
+                    using (OracleCommand cmdColumnName = new OracleCommand(selectColumnName))
                     {
                         cmdColumnName.Connection = conn;
                         cmdColumnName.CommandType = CommandType.Text;
 
-                        using (TiberoDataReader readerColumnName = cmdColumnName.ExecuteReader())
+                        using (OracleDataReader readerColumnName = cmdColumnName.ExecuteReader())
                         {
                             while (readerColumnName.Read())
                             {
@@ -69,12 +77,12 @@ namespace TmaxWebApplication1.Pages
                     }
 
                     // get rows of EMP
-                    using (TiberoCommand cmdEmp = new TiberoCommand(selectEmp))
+                    using (OracleCommand cmdEmp = new OracleCommand(selectTable))
                     {
                         cmdEmp.Connection = conn;
                         cmdEmp.CommandType = CommandType.Text;
 
-                        using (TiberoDataReader readerEmp = cmdEmp.ExecuteReader())
+                        using (OracleDataReader readerEmp = cmdEmp.ExecuteReader())
                         {
                             while (readerEmp.Read())
                             {
@@ -100,7 +108,6 @@ namespace TmaxWebApplication1.Pages
             }
 
             ViewData["TableData"] = dt;
-            //ViewData["TableData"] = dt;
             Console.WriteLine(dt);
         }
     }
